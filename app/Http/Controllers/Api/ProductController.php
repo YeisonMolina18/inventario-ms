@@ -8,6 +8,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log; // <-- LÍNEA AÑADIDA
 
 class ProductController extends Controller
 {
@@ -42,6 +43,9 @@ class ProductController extends Controller
 
         $product->update($data);
 
+        // ✅ Mensaje en la consola de Inventario
+        Log::info("--> Stock actualizado para '{$product->nombre}'. Ahora son {$product->disponibles} unidades.");
+
         return response()->json(new ProductResource($product));
     }
 
@@ -51,7 +55,6 @@ class ProductController extends Controller
         return response()->json(null, 204);
     }
 
-    // ✅ Nuevo método: Inventario consulta a Ventas
     public function getSales(Product $product): JsonResponse
     {
         $ventasApiUrl = env('VENTAS_API_URL');
